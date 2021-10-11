@@ -3,7 +3,7 @@
 
 #define DEFAULT_FILE				"address_book.csv"
 
-/* Length of a contact name  */
+/* Length of a contact name */
 #define NAME_LEN					32
 /* Length of a phone number */
 #define NUMBER_LEN					32
