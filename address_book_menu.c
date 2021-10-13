@@ -136,7 +136,7 @@ Status add_contacts(AddressBook *address_book)
 	/* Add the functionality for adding contacts here */
 }
 
-void search_menu_desplay(void)
+void search_menu_display(void)
 {
 	menu_header("Choose search parameter:\n");
 
@@ -156,7 +156,7 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 
 Status search_contact(AddressBook *address_book)
 {
-	search_menu_desplay();
+	search_menu_display();
 	int user_input = (int) getchar();
 	printf("\nInput was %i\n", user_input);
 	switch (user_input) {
