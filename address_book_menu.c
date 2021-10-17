@@ -151,11 +151,16 @@ void search_menu_display(void)
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
-	//I have no clue what a good chunk of the fields are even for, so they'll be skipped for now.
+	//I have no clue what a good chunk of the fields are even for, so they'll be skipped/filled with unused variables for now.
+	const AddressBook *AddressPointer; //creating pointer to address book for reading
+
 	switch (mode) {
 		case e_first_opt:
 			for (int i = 0; i < loop_count; i++) {
-				
+				if (strcmp(&AddressPointer->list->name, str) == 0) { //Dereference pointer to use pointer notation to get list to use pointer notation to get name
+
+				}
+				AddressPointer++; //Increment to next contact
 			}
 			break;
 		case e_second_opt:
