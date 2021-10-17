@@ -63,7 +63,7 @@ void menu_header(const char *str)
 	system("clear");
 
 	printf("#######  Address Book  #######\n");
-	if (str != '\0')
+	if (*str != '\0')
 	{
 		printf("#######  %s\n", str);
 	}
@@ -151,30 +151,70 @@ void search_menu_display(void)
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
-	/* Add the functionality for adding contacts here */
+	//I have no clue what a good chunk of the fields are even for, so they'll be skipped for now.
+	switch (mode) {
+		case e_first_opt:
+			for (int i = 0; i < loop_count; i++) {
+				
+			}
+			break;
+		case e_second_opt:
+			for (int i = 0; i < loop_count; i++) {
+				
+			}
+			break;
+		case e_third_opt:
+			for (int i = 0; i < loop_count; i++) {
+				
+			}
+			break;
+		case e_fourth_opt:
+		;int convert_string;
+		convert_string = (int)str - 48; //Convert string to int as serial number needs int (-48 as numbers start from 48)
+			for (int i = 0; i < loop_count; i++) {
+				
+			}
+			break;
+	}
+		
+	
+	return e_no_match;
 }
 
 Status search_contact(AddressBook *address_book)
 {
 	search_menu_display();
-	char user_input;
+	char* user_input;
 	scanf("%c",user_input);
 	printf("\nInput was %i\n", user_input);
-	switch (user_input) {
-		case '0':
-			break;
+	switch (user_input[0]) {
 		case '1':
+			printf("\nEnter name to search: ");
+			scanf("%s", user_input);
+			search(user_input,address_book,sizeof(address_book)/sizeof(address_book[0]),sizeof(address_book)/sizeof(address_book[0]),user_input,e_first_opt);
 			break;
 		case '2':
+			printf("\nEnter phone number to search: ");
+			scanf("%s", user_input);
+			search(user_input,address_book,sizeof(address_book)/sizeof(address_book[0]),sizeof(address_book)/sizeof(address_book[0]),user_input,e_second_opt);
 			break;
 		case '3':
+			printf("\nEnter email to search: ");
+			scanf("%s", user_input);
+			search(user_input,address_book,sizeof(address_book)/sizeof(address_book[0]),sizeof(address_book)/sizeof(address_book[0]),user_input,e_third_opt);
 			break;
 		case '4':
+			printf("\nEnter serial number to search: ");
+			scanf("%s", user_input);
+			search(user_input,address_book,sizeof(address_book)/sizeof(address_book[0]),sizeof(address_book)/sizeof(address_book[0]),user_input,e_fourth_opt);
+			break;
+		case '0':
 			break;
 		default:
 			printf("Invalid input!");
 			break;
 	}
+
 }
 
 Status edit_contact(AddressBook *address_book)
