@@ -153,12 +153,13 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 {
 	//I have no clue what a good chunk of the fields are even for, so they'll be skipped/filled with unused variables for now.
 	const AddressBook *AddressPointer; //creating pointer to address book for reading
+	Status status; //Used to return success
 
 	switch (mode) {
 		case e_first_opt:
 			for (int i = 0; i < loop_count; i++) {
 				if (strcmp(&AddressPointer->list->name, str) == 0) { //Dereference pointer to use pointer notation to get list to use pointer notation to get name
-
+					status = e_success; //Success! set to success
 				}
 				AddressPointer++; //Increment to next contact
 			}
@@ -174,16 +175,20 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 			}
 			break;
 		case e_fourth_opt:
-		;int convert_string;
-		convert_string = (int)str - 48; //Convert string to int as serial number needs int (-48 as numbers start from 48)
+		;int convert_string = atoi(str); //convert to int
 			for (int i = 0; i < loop_count; i++) {
-				
+				if (&AddressPointer->list->si_no == convert_string) { //Int comparison
+
+				}
 			}
 			break;
 	}
-		
-	
-	return e_no_match;
+	if (status != e_success) {
+		return e_no_match;
+	}
+	else {
+		return e_success;
+	}
 }
 
 Status search_contact(AddressBook *address_book)
@@ -196,22 +201,30 @@ Status search_contact(AddressBook *address_book)
 		case '1':
 			printf("\nEnter name to search: ");
 			scanf("%s", user_input);
-			search(user_input,address_book,sizeof(address_book)/sizeof(address_book[0]),sizeof(address_book)/sizeof(address_book[0]),user_input,e_first_opt);
+			if (search(user_input,address_book,sizeof(address_book)/sizeof(address_book[0]),sizeof(address_book)/sizeof(address_book[0]),user_input,e_first_opt) == e_no_match) {
+				printf("\n%s not found.", user_input);
+			}
 			break;
 		case '2':
 			printf("\nEnter phone number to search: ");
 			scanf("%s", user_input);
-			search(user_input,address_book,sizeof(address_book)/sizeof(address_book[0]),sizeof(address_book)/sizeof(address_book[0]),user_input,e_second_opt);
+			if (search(user_input,address_book,sizeof(address_book)/sizeof(address_book[0]),sizeof(address_book)/sizeof(address_book[0]),user_input,e_second_opt) == e_no_match) {
+				printf("\n%s not found.", user_input);
+			}
 			break;
 		case '3':
 			printf("\nEnter email to search: ");
 			scanf("%s", user_input);
-			search(user_input,address_book,sizeof(address_book)/sizeof(address_book[0]),sizeof(address_book)/sizeof(address_book[0]),user_input,e_third_opt);
+			if (search(user_input,address_book,sizeof(address_book)/sizeof(address_book[0]),sizeof(address_book)/sizeof(address_book[0]),user_input,e_third_opt) == e_no_match) {
+				printf("\n%s not found.", user_input);
+			}
 			break;
 		case '4':
 			printf("\nEnter serial number to search: ");
 			scanf("%s", user_input);
-			search(user_input,address_book,sizeof(address_book)/sizeof(address_book[0]),sizeof(address_book)/sizeof(address_book[0]),user_input,e_fourth_opt);
+			if (search(user_input,address_book,sizeof(address_book)/sizeof(address_book[0]),sizeof(address_book)/sizeof(address_book[0]),user_input,e_fourth_opt) == e_no_match) {
+				printf("\n%s not found.", user_input);
+			}
 			break;
 		case '0':
 			break;
