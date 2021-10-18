@@ -203,15 +203,19 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 			break;
 		case e_third_opt:
 			for (int i = 0; i < loop_count; i++) {
-				
+				char* emails = ContactPointer->email_addresses;
+				for (int j = 0; j < EMAIL_ID_COUNT; j++) {
+					if (strcmp(emails[j], str) == 0) status = e_success; //Success! set to success
+				}
 			}
 			break;
 		case e_fourth_opt:
 		;int convert_string = atoi(str); //convert to int
 			for (int i = 0; i < loop_count; i++) {
 				if (ContactPointer->si_no == convert_string) { //Int comparison
-
+					status = e_success;
 				}
+				ContactPointer++;
 			}
 			break;
 	}
