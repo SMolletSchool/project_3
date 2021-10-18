@@ -231,6 +231,7 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 		render_text(ContactPointer->name);
 		render_text(ContactPointer->phone_numbers);
 		render_text(ContactPointer->email_addresses);
+		printf("============================================================================================================/n");
 	}
 	return status;
 }
