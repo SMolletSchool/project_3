@@ -146,9 +146,87 @@ Status search_contact(AddressBook *address_book)
 	/* Add the functionality for search contacts here */
 }
 
+void edit_menu(void)
+{
+	menu_header("Search by Contact to Edit by:\n");
+
+	printf("0. Back\n");
+	printf("1. Name\n");
+	printf("2. Phone No\n");
+	printf("3. Email ID\n");
+	printf("4. Serial No\n");
+	printf("\n");
+	printf("Please select an option: ");
+}
+
 Status edit_contact(AddressBook *address_book)
 {
-	/* Add the functionality for edit contacts here */
+    int option;
+    char name[NAME_LEN];
+    char num[NUMBER_LEN];
+    char email[EMAIL_ID_LEN];
+    char temp[5];
+    char select[] = 's';
+    char quit[] = 'q';
+    
+    do
+	{
+		edit_menu();
+
+		option = get_option(NUM, "");
+
+		
+
+		switch (option)
+		{
+            case 0: // back
+                goto skip;
+                break;
+			case 1: // edit by name
+				printf("Enter the Name: ");
+                scanf("%s", name);
+                
+                if(search(name,address_book,sizeof(address_book)/sizeof(address_book[0]),sizeof(address_book)/sizeof(address_book[0]),user_input,e_first_opt) == e_no_match)
+                {
+                    printf("\n%s is not found", name);
+                    break;
+                }
+                else
+                {
+                    menu_header("Search Result:\n");
+                    search(name,address_book,sizeof(address_book)/sizeof(address_book[0]),sizeof(address_book)/sizeof(address_book[0]),user_input,e_first_opt);
+                    printf("Press: [s] Select. [q] | cancel: ");
+                    scanf("%s",temp);
+                    
+                    if(strcmp(temp,select))
+                    {
+                        printf("\nSelect a Serial Number (S.No) to Edit: ");
+                        scanf("%s",temp);
+                        // will continue
+                    }
+
+                        
+
+                }
+				break;
+			case 2: // edit by phone no
+				
+				break;
+			case 3: // edit by email
+				edit_contact(address_book);
+				break;
+			case 4: // edit by serial no
+				
+				break;
+			default:
+                printf("Invalid input. Please select 0, 1, 2, 3, or 4")
+		}
+	} while (option != e_exit);
+
+
+
+    skip:
+	return e_success;
 }
 
 Status delete_contact(AddressBook *address_book)
