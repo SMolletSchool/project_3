@@ -8,7 +8,31 @@
 
 #include "address_book.h"
 
-Status load_file(AddressBook *address_book)
+// save and exit
+
+Status save_file(AddressBook *address_book) //
+{
+	/*
+	 * Write contacts back to file.
+s	 * Re write the complete file currently
+	 */ 
+	address_book->fp = fopen(DEFAULT_FILE, "w");
+
+	if (address_book->fp == NULL)
+	{
+		return e_fail;
+	}
+
+	/* 
+	 * Add logic to save the file make sure to do error handling
+	 */ 
+
+	fclose(address_book->fp);
+
+	return e_success;
+}
+
+Status exit_file(AddressBook *address_book)
 {
 	int ret;
 
@@ -19,7 +43,7 @@ Status load_file(AddressBook *address_book)
 	if (ret == 0)
 	{
 		/* 
-		 * Do the neccessary step to open the file
+		 * Do the neccessary step to close the file
 		 * Do error handling
 		 */ 
 	}
@@ -27,29 +51,6 @@ Status load_file(AddressBook *address_book)
 	{
 		/* Create a file for adding entries */
 	}
-
-	return e_success;
-}
-
-Status save_file(AddressBook *address_book)
-{
-	/*
-	 * Write contacts back to file.
-	 * Re write the complete file currently
-	 */ 
-	address_book->fp = fopen(DEFAULT_FILE, "w");
-
-	if (address_book->fp == NULL)
-	{
-		return e_fail;
-	}
-
-	/* 
-	 * Add the logic to save the file
-	 * Make sure to do error handling
-	 */ 
-
-	fclose(address_book->fp);
 
 	return e_success;
 }
