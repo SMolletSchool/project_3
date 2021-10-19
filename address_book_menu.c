@@ -135,7 +135,7 @@ Status add_contacts(AddressBook *address_book)
 {
 	ContactInfo newContact; // creates a new contact to be added to the address book
    int choice; // variable to save user choice
-   int countPhone = 1, countEmail = 1; // stores how many different phone numbers/emails user will input.
+   int countPhone = 1, countEmail = 1; // stores how many different phone numbers/emails user will input. used when listing fields
    backToMenu: ; // using goto to jump back to the add menu while retaining new data
    menu_header("Add Contact:"); // shows header
    printf("0.  Back\n1. Name:    %s\n2. Phone No %d:     %s\n3.  Email ID %d:    %s\n", newContact.name, countPhone, newContact.phone_numbers, countEmail, newContact.email_addresses); // show all available options
@@ -153,11 +153,12 @@ Status add_contacts(AddressBook *address_book)
       case 2: // user wants to add phone number
          printf("\nEnter phone number %d: ", countPhone); // prompt user for name
          scanf("%s", &newContact.phone_numbers[0]); // store this name in phone field for newContact
-         countPhone++;
+         countPhone++; // increment countPhone variable
          goto backToMenu;
       case 3: // user wants to add email
          printf("\nEnter email %d: ", countEmail); // prompt user for name
          scanf("%s", &newContact.email.addresses[0]); // store this name in email field for newContact
+         countEmail++; // increment the countEmail variable
          goto backToMenu;
       
    }
