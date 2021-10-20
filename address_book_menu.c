@@ -152,12 +152,12 @@ Status add_contacts(AddressBook *address_book)
          goto backToMenu; // jump back to add menu
       case 2: // user wants to add phone number
          printf("\nEnter phone number %d: ", countPhone); // prompt user for name
-         scanf("%s", &newContact.phone_numbers[0]); // store this name in phone field for newContact
+         scanf("%s", &newContact.phone_numbers[countPhone]); // store this name in phone field for newContact
          countPhone++; // increment countPhone variable
          goto backToMenu;
       case 3: // user wants to add email
          printf("\nEnter email %d: ", countEmail); // prompt user for name
-         scanf("%s", &newContact.email.addresses[0]); // store this name in email field for newContact
+         scanf("%s", &newContact.email.addresses[countEmail]); // store this name in email field for newContact
          countEmail++; // increment the countEmail variable
          goto backToMenu;
       
