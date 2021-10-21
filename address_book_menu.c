@@ -222,7 +222,7 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 	switch (mode) {
 		case e_first_opt: //searching for name, can just use contactpointer directly
 			for (int i = 0; i < loop_count; i++) {
-				if (strcmp(ContactPointer->name, str) == 0) { //Get name from pointer
+				if (strcmp(ContactPointer->name[0], str) == 0) { //Get name from pointer
 					status = e_success; //Success! set to success
 				}
 				if (status != e_success) //If fail to find contact there,
@@ -231,17 +231,15 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 			break;
 		case e_second_opt: //searching onwards (except serial number), needs inner loop to check each possible phone/email
 			for (int i = 0; i < loop_count; i++) {
-				char* phones = ContactPointer->phone_numbers;
 				for (int j = 0; j < PHONE_NUMBER_COUNT; j++) {
-					if (strcmp(phones[j], str) == 0) status = e_success; //Success! set to success
+					if (strcmp(ContactPointer->phone_numbers[j], str) == 0) status = e_success; //Success! set to success
 				}
 			}
 			break;
 		case e_third_opt:
 			for (int i = 0; i < loop_count; i++) {
-				char* emails = ContactPointer->email_addresses;
 				for (int j = 0; j < EMAIL_ID_COUNT; j++) {
-					if (strcmp(emails[j], str) == 0) status = e_success; //Success! set to success
+					if (strcmp(ContactPointer->email_addresses[j], str) == 0) status = e_success; //Success! set to success
 				}
 			}
 			break;
