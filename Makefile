@@ -2,8 +2,8 @@ CC=gcc
 
 all: program
 
-program: address_book_fops.c address_book_menu.c main.c
-	$(CC) -o addressbook address_book_fops.c address_book_menu.c main.c
+program: src\address_book_fops.c src\address_book_menu.c src\main.c
+	$(CC) -o addressbook src\address_book_fops.c src\address_book_menu.c src\main.c
 
 clean:
 	del *.exe *.o
