@@ -107,6 +107,7 @@ Status menu(AddressBook *address_book)
 		{
 			case e_add_contact:
 				/* Add your implementation to call add_contacts function here */
+				add_contacts(address_book);
 				break;
 			case e_search_contact:
 				search_contact(address_book);
@@ -133,7 +134,7 @@ Status menu(AddressBook *address_book)
 
 Status add_contacts(AddressBook *address_book)
 {
-	ContactInfo newContact; // creates a new contact to be added to the address book
+   ContactInfo newContact; // creates a new contact to be added to the address book
    int choice; // variable to save user choice
    int countPhone = 1, countEmail = 1; // stores how many different phone numbers/emails user will input. used when listing fields
    backToMenu: ; // using goto to jump back to the add menu while retaining new data
