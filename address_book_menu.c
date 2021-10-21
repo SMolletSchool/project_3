@@ -133,8 +133,43 @@ Status menu(AddressBook *address_book)
 
 Status add_contacts(AddressBook *address_book)
 {
-	/* Add the functionality for adding contacts here */
+	ContactInfo newContact; // creates a new contact to be added to the address book
+   int choice; // variable to save user choice
+   int countPhone = 1, countEmail = 1; // stores how many different phone numbers/emails user will input. used when listing fields
+   backToMenu: ; // using goto to jump back to the add menu while retaining new data
+   menu_header("Add Contact:"); // shows header
+   printf("0.  Back\n1. Name:    %s\n2. Phone No %d:     %s\n3.  Email ID %d:    %s\n", newContact.name, countPhone, newContact.phone_numbers, countEmail, newContact.email_addresses); // show all available options
+   printf("Please select an option: "); // prompt user to choose an option
+   scanf("%d", &choice); // save option into variable choice
+   int bookSize = address_book -> count; // create var bookSize to store size of address book
+   
+   switch(choice) {
+      case 0: // user will go back to main menu
+         break; // all done with data input. exit this switch case, then go on to saving new contact.
+      case 1: // user wants to add a name
+         printf("\nEnter the name: "); // prompt user for name
+         scanf("%s", &newContact.name[0]); // store this name in name field for newContact
+         goto backToMenu; // jump back to add menu
+      case 2: // user wants to add phone number
+         printf("\nEnter phone number %d: ", countPhone); // prompt user for name
+         scanf("%s", &newContact.phone_numbers[countPhone]); // store this name in phone field for newContact
+         countPhone++; // increment countPhone variable
+         goto backToMenu;
+      case 3: // user wants to add email
+         printf("\nEnter email %d: ", countEmail); // prompt user for name
+         scanf("%s", &newContact.email_addresses[countEmail]); // store this name in email field for newContact
+         countEmail++; // increment the countEmail variable
+         goto backToMenu;
+      
+   }
+   
+   // user should be finished with data input once we reach this part...
+   bookSize++; // increment the bookSize to reflect added contact
+   newContact.si_no = bookSize; // assign a serial number to the new contact, using new bookSize
+   address_book -> count = bookSize; // update count variable in address book
+   address_book -> list[bookSize] = newContact; // finally, add new contact to the address book
 }
+
 
 void search_menu_display(void)
 {
