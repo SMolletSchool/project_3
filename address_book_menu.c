@@ -427,5 +427,80 @@ Status edit_contact(AddressBook *address_book)
 
 Status delete_contact(AddressBook *address_book)
 {
-	/* Add the functionality for delete contacts here */
+	int choice; //user input choice
+	menu_header("Delete Contact"); //calls menu header
+	printf("0.  Back\n1.  Name\n2.  Phone #\n3.  Email ID\n4.Serial #\n\n"); //available options are printed
+	printf("Please select an option"); //has user select an option
+	scanf("$d",&choice); //takes user's input
+	int sizeAddressBook = address_book -> count;
+	char targetName[NAME_LEN];
+	char targetPhone[NUMBER_LEN];
+	char targetEmail[EMAIL_ID_LEN];
+	int targetID; 
+	int phoneNumber = 0; 
+	int email = 0; 
+	int loop = 0; 
+	const AddressBook *endPtr = address_book + sizeAddressBook; //added pointer to point to the beginning 
+	int sizeOfArrayPhone;  
+	int sizeOfArrayEmail; 
+	switch(choice){
+		case '0' :
+			menu(address_book); //this calls menu
+		case '1' :
+			printf("\nEnter the Name: "); //asks for the name
+			scanf("%s", &targetName); // input the name
+			for(address_book < endPtr; address_book++;){ //loops each element of addressbook
+				if(strcmp(*address_book -> list -> name, targetName) == 0){
+					for(; address_book < endPtr-1; address_book++){
+						address_book = address_book + 1; 
+					}
+					break; 
+				}
+				delete_contact(address_book);
+			}
+		case '2' : 
+			printf("\nEnter the Phone Number: "); //asks for phone #
+			scanf("%s", &targetPhone); //input phone #
+			sizeOfArrayPhone = sizeof(address_book -> list -> phone_numbers)/ sizeof(address_book -> list -> phone_numbers[0]);
+			for(; address_book < endPtr; address_book++){ //loops each element of addressbook 
+				while(loop < sizeOfArrayPhone){
+					if(strcmp(address_book -> list -> phone_numbers[loop], targetPhone) == 0){ // if element = to target phone #
+						for(; address_book < endPtr-1; address_book++){
+							address_book = address_book + 1;
+						}
+					break; 
+					}
+					loop++; 
+				}
+				delete_contact(address_book);
+			}
+		case '3' : 
+			printf("\nEnter the Email: "); //enter email
+			scanf("%s", &targetEmail); //user input
+			sizeOfArrayPhone = sizeof(address_book -> list -> email_addresses)/ sizeof(address_book -> list -> email_addresses[0]);
+			for(; address_book < endPtr; address_book++){ //loop through all elements
+				while(loop < sizeOfArrayEmail){
+					if(strcmp(address_book -> list -> email_addresses[loop], targetEmail) == 0){ //if target email found, continue
+						for(; address_book < endPtr-1; address_book++){
+							address_book = address_book+1;
+						}	
+					break; 
+					}
+					loop++; 
+				}
+				delete_contact(address_book);
+			}
+		case '4' :
+			printf("\nEnter the ID: "); //enter ID
+			scanf("%d", &targetID); //user input
+			for(; address_book < endPtr; address_book++){
+				if(address_book -> list -> si_no = targetID){
+					for(; address_book < endPtr-1; address_book++){
+						address_book = address_book+1; 
+					}
+					break; 
+				delete_contact(address_book);
+				}
+			}
+	}		
 }
