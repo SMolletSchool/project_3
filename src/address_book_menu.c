@@ -327,7 +327,7 @@ Status edit_contact(AddressBook *address_book)
 	int target_si_no;
 	int new_si_no;
 
-    char temp[5];
+    char input[5];
     char select[] = 's';
     char quit[] = 'q';
     edit_menu();
@@ -353,13 +353,13 @@ Status edit_contact(AddressBook *address_book)
                 menu_header("Search Result:\n");
                 search(targetName,address_book,address_book->count,1,targetName,e_first_opt);
                 printf("Press: [s] Select. [q] | cancel: ");
-                scanf("%s",temp);
+                scanf("%s",input);
                     
-                if(strcmp(temp,quit))
+                if(strcmp(input,quit))
                 {
                     goto skip;
                 }
-				if(strcmp(temp,select))
+				if(strcmp(input,select))
 				{
 					printf("\nSelect a Serial Number (S.No) to Edit: ");
 					scanf("%d", temp);
@@ -381,13 +381,13 @@ Status edit_contact(AddressBook *address_book)
                 menu_header("Search Result:\n");
                 search(targetPhone,address_book,address_book->count,1,targetPhone,e_second_opt);
                 printf("Press: [s] Select. [q] | cancel: ");
-                scanf("%s",temp);
+                scanf("%s",input);
                     
-                if(strcmp(temp,quit))
+                if(strcmp(input,quit))
                 {
                     goto skip;
                 }
-				if(strcmp(temp,select))
+				if(strcmp(input,select))
 				{
 					printf("\nSelect a Serial Number (S.No) to Edit: ");
 					scanf("%d", temp);
@@ -410,13 +410,13 @@ Status edit_contact(AddressBook *address_book)
                 menu_header("Search Result:\n");
                 search(targetEmail,address_book,address_book->count,1,targetEmail,e_third_opt);
                 printf("Press: [s] Select. [q] | cancel: ");
-                scanf("%s",temp);
+                scanf("%s",input);
                     
-                if(strcmp(temp,quit))
+                if(strcmp(input,quit))
                 {
                     goto skip;
                 }
-				if(strcmp(temp,select))
+				if(strcmp(input,select))
 				{
 					printf("\nEnter new Email: ");
 					scanf("%s",newEmail);
@@ -436,13 +436,13 @@ Status edit_contact(AddressBook *address_book)
                 menu_header("Search Result:\n");
                 search(target_si_no,address_book,address_book->count,4,target_si_no,e_fourth_opt);
                 printf("Press: [s] Select. [q] | cancel: ");
-                scanf("%s",temp);
+                scanf("%s",input);
                     
-                if(strcmp(temp,quit))
+                if(strcmp(input,quit))
                 {
                     goto skip;
                 }
-				if(strcmp(temp,select))
+				if(strcmp(input,select))
 				{
 					printf("\nEnter new Serial Number: ");
 					scanf("%d",new_si_no);
