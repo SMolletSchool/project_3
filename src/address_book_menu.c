@@ -343,6 +343,19 @@ Status search_contact(AddressBook *address_book)
 
 }
 
+void edit_menu(void)
+{
+	menu_header("Search by Contact to Edit by:\n");
+
+	printf("0. Back\n");
+	printf("1. Name\n");
+	printf("2. Phone No\n");
+	printf("3. Email ID\n");
+	printf("4. Serial No\n");
+	printf("\n");
+	printf("Please select an option: ");
+}
+
 Status edit_contact(AddressBook *address_book)
 {
 	int temp;
@@ -357,8 +370,8 @@ Status edit_contact(AddressBook *address_book)
 	int new_si_no;
 
     char input[5];
-    char select[] = 's';
-    char quit[] = 'q';
+    char select = "s";
+    char quit = "q";
     edit_menu();
 
 	scanf("$d",&option);
