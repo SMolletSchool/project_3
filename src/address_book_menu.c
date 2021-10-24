@@ -16,7 +16,19 @@ int get_option(int type, const char *msg)
 	 * Just an enter key detection
 	 * Read an number
 	 * Read a charcter
-	 */ 
+	 */
+	char choice;
+	if (msg != NULL) printf(msg);
+	switch (type) {
+		case NONE:
+			return scanf("%s");
+		case NUM:
+			scanf("%i", &choice);
+			return choice;
+		case CHAR:
+			scanf("%c", choice);
+			return choice;
+	}
 
 	/* Fill the code to add above functionality */
 }
@@ -60,7 +72,7 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	system("clear");
+	system("cls");
 
 	printf("#######  Address Book  #######\n");
 	if (*str != '\0')
@@ -216,40 +228,44 @@ void render_text(char* string) {
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
 	//I have no clue what a good chunk of the fields are even for, so they'll be skipped/filled with unused variables for now.
-	const ContactInfo *ContactPointer = address_book->list; //creating pointer to contact list in address book for reading
 	Status status = e_no_match; //Used to return success
-
+	int contactFound = 0;
 	switch (mode) {
-		case e_first_opt: //searching for name, can just use contactpointer directly
+		case e_first_opt: //searching for name, can just use name
 			for (int i = 0; i < loop_count; i++) {
-				if (strcmp(ContactPointer->name[0], str) == 0) { //Get name from pointer
+				if (strcmp(address_book->list[i].name[0], str) == 0) { //Get name from pointer
 					status = e_success; //Success! set to success
+					contactFound = i;
 				}
-				if (status != e_success) //If fail to find contact there,
-				ContactPointer++; //Increment to next contact
 			}
 			break;
 		case e_second_opt: //searching onwards (except serial number), needs inner loop to check each possible phone/email
 			for (int i = 0; i < loop_count; i++) {
 				for (int j = 0; j < PHONE_NUMBER_COUNT; j++) {
-					if (strcmp(ContactPointer->phone_numbers[j], str) == 0) status = e_success; //Success! set to success
+					if (strcmp(address_book->list[i].phone_numbers[j], str) == 0) {
+						status = e_success;
+						contactFound = i;
+					} //Success! set to success
 				}
 			}
 			break;
 		case e_third_opt:
 			for (int i = 0; i < loop_count; i++) {
 				for (int j = 0; j < EMAIL_ID_COUNT; j++) {
-					if (strcmp(ContactPointer->email_addresses[j], str) == 0) status = e_success; //Success! set to success
+					if (strcmp(address_book->list[i].email_addresses[j], str) == 0) {
+						status = e_success;
+						contactFound = i;
+					} //Success! set to success;
 				}
 			}
 			break;
 		case e_fourth_opt:
 		;int convert_string = atoi(str); //convert to int
 			for (int i = 0; i < loop_count; i++) {
-				if (ContactPointer->si_no == convert_string) { //Int comparison
+				if (address_book->list[i].si_no == convert_string) { //Int comparison
 					status = e_success;
+					contactFound = i;
 				}
-				ContactPointer++;
 			}
 			break;
 	}
@@ -261,10 +277,23 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 		printf(": S. No : Name                            : Phone No                        : Email ID                     :/n");
 		printf("============================================================================================================/n");
 		//print each section spaced out correctly
-		render_serial(ContactPointer->si_no);
-		render_text(ContactPointer->name);
-		render_text(ContactPointer->phone_numbers);
-		render_text(ContactPointer->email_addresses);
+		render_serial(address_book->list[contactFound].si_no);
+		render_text(address_book->list[contactFound].name[0]);
+		render_text(address_book->list[contactFound].phone_numbers[0]);
+		render_text(address_book->list[contactFound].email_addresses[0]);
+		printf("\n                                          ");
+		render_text(address_book->list[contactFound].phone_numbers[1]);
+		render_text(address_book->list[contactFound].email_addresses[1]);
+		printf("\n                                          ");
+		render_text(address_book->list[contactFound].phone_numbers[2]);
+		render_text(address_book->list[contactFound].email_addresses[2]);
+		printf("\n                                          ");
+		render_text(address_book->list[contactFound].phone_numbers[3]);
+		render_text(address_book->list[contactFound].email_addresses[3]);
+		printf("\n                                          ");
+		render_text(address_book->list[contactFound].phone_numbers[4]);
+		render_text(address_book->list[contactFound].email_addresses[4]);
+		printf("\n                                          ");
 		printf("============================================================================================================/n");
 	}
 	return status;
