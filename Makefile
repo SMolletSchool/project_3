@@ -1,9 +1,18 @@
 CC=gcc
 
+
+ifeq ($(OS),Windows_NT)
+	DIRSEP=\\
+	DELETE=del
+else
+	DIRSEP=/
+	DELETE=rm
+endif
+
 all: program
 
-program: src\address_book_fops.c src\address_book_menu.c src\main.c
-	$(CC) -o bin\addressbook src\address_book_fops.c src\address_book_menu.c src\main.c
+program: src$(DIRSEP)address_book_fops.c src$(DIRSEP)address_book_menu.c src$(DIRSEP)main.c
+	$(CC) -o bin$(DIRSEP)addressbook src$(DIRSEP)address_book_fops.c src$(DIRSEP)address_book_menu.c src$(DIRSEP)main.c
 
 clean:
-	del bin\*.exe *.exe *.o
+	$(DELETE) bin$(DIRSEP)*.exe *.exe *.o
