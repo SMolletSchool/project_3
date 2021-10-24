@@ -32,37 +32,37 @@ void read_items(AddressBook *address_book)
 	//ContactInfo *contactPointer = address_book->list; //Make a pointer for writing to the list?
 
 	int contactSize = sizeof(ContactInfo);
-	/*printf("contact size initialized to %i\n", contactSize);
+	printf("contact size initialized to %i\n", contactSize);
 	printf("count is equal to %i\n", address_book->count);
-	printf("%i bytes should be allocated\n", contactSize*(address_book->count));*/
+	printf("%i bytes should be allocated\n", contactSize*(address_book->count));
 	address_book->list = malloc((address_book->count)*contactSize); //Allocate data for the contacts
-	//printf("%i bytes allocated\n", (address_book->count)*contactSize);
+	printf("%i bytes allocated\n", (address_book->count)*contactSize);
 	for (int i = 0; i < address_book->count; i++) { //For every contact
 		for (char c = getc(address_book->fp); c != NEXT_ENTRY; c = getc(address_book->fp)) { //Repeat until we reach the newline
-			//printf("current char: %c\n", c);
+			printf("current char: %c\n", c);
 			if (c == FIELD_DELIMITER) { //found a comma, time to populate this section
-				//printf("attempting to populate contact %i\n", i);
+				printf("attempting to populate contact %i\n", i);
 				if (*buf != "\0") {//If the buffer isn't empty
 					switch (section) {
 						case -1: //Serial number
-							//printf("attempting to write to address %i\n", address_book->list[i].si_no);
+							printf("attempting to write to address %i\n", address_book->list[i].si_no);
 							address_book->list[i].si_no = atoi(buf);
-							//printf("serial number written as %i\n", address_book->list[i].si_no);
+							printf("serial number written as %i\n", address_book->list[i].si_no);
 							break;
 						case 0: //Name
-							//printf("attempting to write to address %i\n", address_book->list[i].name);
+							printf("attempting to write to address %i\n", address_book->list[i].name);
 							strcpy(address_book->list[i].name, buf);
-							//printf("name written as %s\n", address_book->list[i].name);
+							printf("name written as %s\n", address_book->list[i].name);
 							break;
 						case 1: //Phone number 1
-							//printf("attempting to write to address %i\n", address_book->list->phone_numbers[0]);
+							printf("attempting to write to address %i\n", address_book->list->phone_numbers[0]);
 							strcpy(address_book->list[i].phone_numbers[0], buf);
-							//printf("phone 0 written as %s\n", address_book->list[i].phone_numbers[0]);
+							printf("phone 0 written as %s\n", address_book->list[i].phone_numbers[0]);
 							break;
 						case 2: //Phone number 2
-							//printf("attempting to write to address %i\n", address_book->list->phone_numbers[1]);
+							printf("attempting to write to address %i\n", address_book->list->phone_numbers[1]);
 							strcpy(address_book->list[i].phone_numbers[1], buf);
-							//printf("phone 1 written as %s\n", address_book->list[i].phone_numbers[1]);
+							printf("phone 1 written as %s\n", address_book->list[i].phone_numbers[1]);
 							break;
 						case 3: //Phone number 3
 							strcpy(address_book->list[i].phone_numbers[2], buf);
@@ -97,20 +97,20 @@ void read_items(AddressBook *address_book)
 							break;
 					}
 					memset(buf,0,sizeof(buf-1)); //empty the buffer for the next word
-					//printf("buffer emptied\n");
+					printf("buffer emptied\n");
 				}
 				section++;
-				//printf("section incremented\n");
+				printf("section incremented\n");
 			}
 			else {
-				//printf("attempting to concatenate %c to buffer\n", c);
+				printf("attempting to concatenate %c to buffer\n", c);
 				buf[buf_index] = (char) c; //concatenate character onto buffer
 				buf_index++; //increment index for next char
-				//printf("char concatenated\n");
+				printf("char concatenated\n");
 			}
 		}
 		section = -1;
-		//printf("section reset\n");
+		printf("section reset\n");
 		buf_index = 0;
 	}
 }

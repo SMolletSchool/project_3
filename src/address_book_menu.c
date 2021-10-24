@@ -199,7 +199,7 @@ Status menu(AddressBook *address_book)
 				break;
 			case e_list_contacts:
 				break;
-				/* Add your implementation to call list_contacts function here */
+				list_contacts(address_book,"1",1,"1",e_list);
 			case e_save:
 				save_file(address_book);
 				break;
