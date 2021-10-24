@@ -123,16 +123,23 @@ Status load_file(AddressBook *address_book)
 	 * Check for file existance
 	 */
 
+	ret = access(DEFAULT_FILE,F_OK);
+
 	if (ret == 0)
 	{
 		/* 
 		 * Do the neccessary step to open the file
 		 * Do error handling
-		 */ 
+		 */
+		address_book->fp = fopen(DEFAULT_FILE, "r"); //open for reading
+		read_items(address_book);
+		fclose(address_book->fp);
+
 	}
 	else
 	{
 		/* Create a file for adding entries */
+		address_book->fp = fopen(DEFAULT_FILE, "w+"); //open for reading and writing, while creating the file
 	}
 
 	return e_success;
@@ -143,19 +150,27 @@ Status save_file(AddressBook *address_book)
 	/*
 	 * Write contacts back to file.
 	 * Re write the complete file currently
-	 */ 
+	 */
+	printf("Attempting to open %s\n", DEFAULT_FILE);
 	address_book->fp = fopen(DEFAULT_FILE, "w");
 
 	if (address_book->fp == NULL)
 	{
+		printf("Failed to open.\n");
 		return e_fail;
 	}
 
 	/* 
 	 * Add the logic to save the file
 	 * Make sure to do error handling
-	 */ 
-
+	 */
+	printf("Opened successfully.\n");
+	for (int items = 0; items < address_book->count; items) { //repeat for each contact
+		//Instead of separating the writing into multiple statements, just use one really long write
+		printf("Attemping to write to file, contact %i\n", items);
+		fprintf(address_book->fp, "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", address_book->list[items].si_no,address_book->list[items].name[0],address_book->list[items].phone_numbers[0],address_book->list[items].phone_numbers[1],address_book->list[items].phone_numbers[2],address_book->list[items].phone_numbers[3],address_book->list[items].phone_numbers[4],address_book->list[items].email_addresses[0],address_book->list[items].email_addresses[1],address_book->list[items].email_addresses[2],address_book->list[items].email_addresses[3],address_book->list[items].email_addresses[4]);
+		printf("Wrote %d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",address_book->list[items].si_no,address_book->list[items].name[0],address_book->list[items].phone_numbers[0],address_book->list[items].phone_numbers[1],address_book->list[items].phone_numbers[2],address_book->list[items].phone_numbers[3],address_book->list[items].phone_numbers[4],address_book->list[items].email_addresses[0],address_book->list[items].email_addresses[1],address_book->list[items].email_addresses[2],address_book->list[items].email_addresses[3],address_book->list[items].email_addresses[4]);
+	}
 	fclose(address_book->fp);
 
 	return e_success;
