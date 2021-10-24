@@ -17,17 +17,22 @@ int get_option(int type, const char *msg)
 	 * Read an number
 	 * Read a charcter
 	 */
-	char choice;
+	
 	if (msg != NULL) printf(msg);
-	switch (type) {
-		case NONE:
-			return scanf("%s");
-		case NUM:
-			scanf("%i", &choice);
-			return choice;
-		case CHAR:
-			scanf("%c", choice);
-			return choice;
+	//else if series used for declaring choice as different types
+	if (type == NONE) {
+		scanf(" ");
+		return 0;
+	}
+	else if (type == NUM) {
+		int choice;
+		scanf("%i", &choice);
+		return choice;
+	}
+	else if (type == CHAR) {
+		char choice;
+		scanf("%c", choice);
+		return choice;
 	}
 
 	/* Fill the code to add above functionality */
@@ -57,14 +62,76 @@ Status save_prompt(AddressBook *address_book)
 	return e_success;
 }
 
+void render_serial(int number) {
+	
+	printf(": %i", number);
+
+	int spaces_to_fill = 4; //Empty area would be 4 spaces
+	int number_reduced = number;
+	while (number_reduced != 0) {
+		spaces_to_fill--; //Reduce spaces needed by each digit in the number
+		number_reduced /= 10;
+	}
+	for (int i = 0; i < spaces_to_fill; i++)
+	{
+		printf(" ");
+	}
+}
+
+void render_text(char* string) {
+	
+	printf(": %s", string);
+
+	int spaces_to_fill = 32 - strlen(string); //Get the length of the string, and subtract how many spaces remain by that
+
+	for (int i = 0; i < spaces_to_fill; i++)
+	{
+		printf(" ");
+	}
+}
+
+void render_contact(AddressBook *address_book, int contact) {
+	/*
+		Print contact info at pointer
+		*/
+		printf("============================================================================================================/n");
+		printf(": S. No : Name                            : Phone No                        : Email ID                     :/n");
+		printf("============================================================================================================/n");
+		//print each section spaced out correctly
+		render_serial(address_book->list[contact].si_no);
+		render_text(address_book->list[contact].name[0]);
+		render_text(address_book->list[contact].phone_numbers[0]);
+		render_text(address_book->list[contact].email_addresses[0]);
+		printf("\n                                          ");
+		render_text(address_book->list[contact].phone_numbers[1]);
+		render_text(address_book->list[contact].email_addresses[1]);
+		printf("\n                                          ");
+		render_text(address_book->list[contact].phone_numbers[2]);
+		render_text(address_book->list[contact].email_addresses[2]);
+		printf("\n                                          ");
+		render_text(address_book->list[contact].phone_numbers[3]);
+		render_text(address_book->list[contact].email_addresses[3]);
+		printf("\n                                          ");
+		render_text(address_book->list[contact].phone_numbers[4]);
+		render_text(address_book->list[contact].email_addresses[4]);
+		printf("\n                                          ");
+}
+
 Status list_contacts(AddressBook *address_book, const char *title, int *index, const char *msg, Modes mode)
 {
-	/* 
-	 * Add code to list all the contacts availabe in address_book.csv file
-	 * Should be menu based
-	 * The menu provide navigation option if the entries increase the page size
-	 */ 
 
+	if (address_book->list == NULL ) // nothing to display
+	{
+		printf("Address Book is empty\n");
+		return e_fail;
+	}
+
+	size_t i = 0;
+	for (; i < address_book->count; ++i) // run through contacts and print out info
+	{
+		render_contact(address_book,i);
+	}
+	printf("============================================================================================================/n");
 	return e_success;
 }
 
@@ -106,7 +173,7 @@ Status menu(AddressBook *address_book)
 	{
 		main_menu();
 
-		option = get_option(NUM, "");
+		option = get_option(NUM, " ");
 
 		if ((address_book-> count == 0) && (option != e_add_contact))
 		{
@@ -197,33 +264,7 @@ void search_menu_display(void)
 	printf("Please select an option: ");
 }
 
-void render_serial(int number) {
-	
-	printf(": %i", number);
 
-	int spaces_to_fill = 4; //Empty area would be 4 spaces
-	int number_reduced = number;
-	while (number_reduced != 0) {
-		spaces_to_fill--; //Reduce spaces needed by each digit in the number
-		number_reduced /= 10;
-	}
-	for (int i = 0; i < spaces_to_fill; i++)
-	{
-		printf(" ");
-	}
-}
-
-void render_text(char* string) {
-	
-	printf(": %s", string);
-
-	int spaces_to_fill = 32 - strlen(string); //Get the length of the string, and subtract how many spaces remain by that
-
-	for (int i = 0; i < spaces_to_fill; i++)
-	{
-		printf(" ");
-	}
-}
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
@@ -270,30 +311,7 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 			break;
 	}
 	if (status == e_success) {
-		/*
-		Print contact info at pointer
-		*/
-		printf("============================================================================================================/n");
-		printf(": S. No : Name                            : Phone No                        : Email ID                     :/n");
-		printf("============================================================================================================/n");
-		//print each section spaced out correctly
-		render_serial(address_book->list[contactFound].si_no);
-		render_text(address_book->list[contactFound].name[0]);
-		render_text(address_book->list[contactFound].phone_numbers[0]);
-		render_text(address_book->list[contactFound].email_addresses[0]);
-		printf("\n                                          ");
-		render_text(address_book->list[contactFound].phone_numbers[1]);
-		render_text(address_book->list[contactFound].email_addresses[1]);
-		printf("\n                                          ");
-		render_text(address_book->list[contactFound].phone_numbers[2]);
-		render_text(address_book->list[contactFound].email_addresses[2]);
-		printf("\n                                          ");
-		render_text(address_book->list[contactFound].phone_numbers[3]);
-		render_text(address_book->list[contactFound].email_addresses[3]);
-		printf("\n                                          ");
-		render_text(address_book->list[contactFound].phone_numbers[4]);
-		render_text(address_book->list[contactFound].email_addresses[4]);
-		printf("\n                                          ");
+		render_contact(address_book,contactFound);
 		printf("============================================================================================================/n");
 	}
 	return status;
