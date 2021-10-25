@@ -102,7 +102,7 @@ Status list_contacts(AddressBook *address_book)
 		printf("Address Book is empty\n");
 		return e_fail;
 	}
-	printf("\nAttempting to list\n");
+	//printf("\nAttempting to list\n");
 	for (int i = 0; i < address_book->count; i++) // run through contacts and print out info
 	{
 		render_contact(address_book,i);
