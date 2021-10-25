@@ -43,13 +43,13 @@ int read_items(AddressBook *address_book)
 	address_book->list = malloc((address_book->count)*contactSize); //Allocate data for the contacts
 
 	printf("%i bytes allocated\n", (address_book->count)*contactSize);
-
+	char c[1];
 	for (int i = 0; i < address_book->count; i++) { //For every contact
-		for (char c = getc(address_book->fp); c != NEXT_ENTRY; c = getc(address_book->fp)) { //Repeat until we reach the newline
+		for (c[0] = getc(address_book->fp); c[0] != NEXT_ENTRY; c[0] = getc(address_book->fp)) { //Repeat until we reach the newline
 			
-			printf("current char: %c\n", c);
+			printf("current char: %c\n", c[0]);
 			
-			if (c == FIELD_DELIMITER) { //found a comma, time to populate this section
+			if (c[0] == FIELD_DELIMITER) { //found a comma, time to populate this section
 				section++;
 				printf("attempting to populate contact %i\n", i);
 				
@@ -148,10 +148,11 @@ int read_items(AddressBook *address_book)
 				
 				printf("attempting to concatenate %c to buffer\n", c);
 				
-				buf[buf_index] = (char) c; //concatenate character onto buffer
+				strncat(buf,c,1);
+				/*buf[buf_index] = (char) c; //concatenate character onto buffer
 				buf_index++; //increment index for next char
-				
-				printf("char concatenated\n");
+				*/
+				printf("char concatenated, buffer is now %s\n", buf);
 			}
 		}
 		section = -1;
