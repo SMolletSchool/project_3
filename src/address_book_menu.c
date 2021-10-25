@@ -17,7 +17,7 @@
 int get_option(int type, const char *msg)
 {
 	/*
-	 * Mutilfuction user intractions like
+	 * Mutilfuction user interactions like
 	 * Just an enter key detection
 	 * Read an number
 	 * Read a charcter
@@ -46,21 +46,15 @@ int get_option(int type, const char *msg)
 Status save_prompt(AddressBook *address_book)
 {
 	char option;
+	main_menu();
 
-	do
+	option = get_option(CHAR, "\rEnter 'N' to Ignore and 'Y' to Save: ");
+
+	if (option == 'Y')
 	{
-		main_menu();
-
-		option = get_option(CHAR, "\rEnter 'N' to Ignore and 'Y' to Save: ");
-
-		if (option == 'Y')
-		{
-			save_file(address_book);
-			printf("Exiting. Data saved in %s\n", DEFAULT_FILE);
-
-			break;
-		}
-	} while (option != 'N');
+		save_file(address_book);
+		printf("Exiting. Data saved in %s\n", DEFAULT_FILE);
+	}
 
 	free(address_book->list);
 
@@ -168,53 +162,7 @@ void main_menu(void)
 	printf("Please select an option: ");
 }
 
-Status menu(AddressBook *address_book)
-{
-	ContactInfo backup;
-	Status ret;
-	int option;
 
-	do
-	{
-		main_menu();
-
-		option = get_option(NUM, " ");
-
-		if ((address_book-> count == 0) && (option != e_add_contact))
-		{
-			get_option(NONE, "No entries found!!. Would you like to add? Use Add Contacts");
-
-			continue;
-		}
-
-		switch (option)
-		{
-			case e_add_contact:
-				/* Add your implementation to call add_contacts function here */
-				add_contacts(address_book);
-				break;
-			case e_search_contact:
-				search_contact(address_book);
-				break;
-			case e_edit_contact:
-				edit_contact(address_book);
-				break;
-			case e_delete_contact:
-				delete_contact(address_book);
-				break;
-			case e_list_contacts:
-				break;
-				list_contacts(address_book);
-			case e_save:
-				save_file(address_book);
-				break;
-			case e_exit:
-				break;
-		}
-	} while (option != e_exit);
-
-	return e_success;
-}
 
 Status add_contacts(AddressBook *address_book)
 {
@@ -615,4 +563,52 @@ Status delete_contact(AddressBook *address_book)
 				}
 			}
 	}		
+}
+
+Status menu(AddressBook *address_book)
+{
+	ContactInfo backup;
+	Status ret;
+	int option;
+
+	do
+	{
+		main_menu();
+
+		option = get_option(NUM, " ");
+
+		if ((address_book-> count == 0) && (option != e_add_contact))
+		{
+			get_option(NONE, "No entries found!!. Would you like to add? Use Add Contacts");
+
+			continue;
+		}
+
+		switch (option)
+		{
+			case e_add_contact:
+				/* Add your implementation to call add_contacts function here */
+				add_contacts(address_book);
+				break;
+			case e_search_contact:
+				search_contact(address_book);
+				break;
+			case e_edit_contact:
+				edit_contact(address_book);
+				break;
+			case e_delete_contact:
+				delete_contact(address_book);
+				break;
+			case e_list_contacts:
+				break;
+				list_contacts(address_book);
+			case e_save:
+				save_file(address_book);
+				break;
+			case e_exit:
+				break;
+		}
+	} while (option != e_exit);
+
+	return e_success;
 }

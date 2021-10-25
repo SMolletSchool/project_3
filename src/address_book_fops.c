@@ -177,7 +177,7 @@ Status load_file(AddressBook *address_book)
 
 	ret = access(DEFAULT_FILE,F_OK);
 	
-	printf("File exists.\n");
+	
 	
 	if (ret == 0)
 	{
@@ -185,7 +185,8 @@ Status load_file(AddressBook *address_book)
 		 * Do the neccessary step to open the file
 		 * Do error handling
 		 */
-		
+		printf("File exists.\n");
+
 		int test_read = read_items(address_book);
 		
 		if (test_read == -1) {
@@ -196,6 +197,8 @@ Status load_file(AddressBook *address_book)
 	else
 	{
 		/* Create a file for adding entries */
+		printf("File doesn't exist, making file.\n");
+
 		address_book->fp = fopen(DEFAULT_FILE, "w"); //open for writing, to create the file
 		fclose(address_book->fp); //then close the file, we don't need it yet
 	}
@@ -227,9 +230,8 @@ Status save_file(AddressBook *address_book)
 	printf("Opened successfully.\n");
 	
 	for (int items = 0; items < address_book->count; items) { //repeat for each contact
-		//Instead of separating the writing into multiple statements, just use one really long write
 		
-		printf("Attemping to write to file, contact %i\n", items);
+		printf("Attempting to write to file, contact %i\n", items);
 		
 		fprintf(address_book->fp, "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", address_book->list[items].si_no,address_book->list[items].name[0],address_book->list[items].phone_numbers[0],address_book->list[items].phone_numbers[1],address_book->list[items].phone_numbers[2],address_book->list[items].phone_numbers[3],address_book->list[items].phone_numbers[4],address_book->list[items].email_addresses[0],address_book->list[items].email_addresses[1],address_book->list[items].email_addresses[2],address_book->list[items].email_addresses[3],address_book->list[items].email_addresses[4]);
 		
