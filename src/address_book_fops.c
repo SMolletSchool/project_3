@@ -33,7 +33,7 @@ int read_items(AddressBook *address_book)
 
 	memset(buf,0,sizeof(buf-1)); //empty the buffer here to clean it
 	int buf_index = 0; //create an index variable to point at each character in buf
-	int section = -1; //make a section variable
+	int section = -2; //make a section variable
 	const int contactSize = sizeof(ContactInfo); //use this for doing malloc
 
 	printf("contact size initialized to %i\n", contactSize);
@@ -50,100 +50,97 @@ int read_items(AddressBook *address_book)
 			printf("current char: %c\n", c);
 			
 			if (c == FIELD_DELIMITER) { //found a comma, time to populate this section
-				
+				section++;
 				printf("attempting to populate contact %i\n", i);
 				
-				if (strlen(buf) != 0) {//If the buffer isn't empty
-					switch (section) {
-						case -1: //Serial number
-							
-							printf("attempting to write to address %i\n", address_book->list[i].si_no);
-							
-							address_book->list[i].si_no = atoi(buf);
-							
-							printf("serial number written as %i\n", address_book->list[i].si_no);
-							
+				//If the buffer isn't empty
+				switch (section) {
+					case -1: //Serial number
+						
+						printf("attempting to write %s to address %p\n", buf, address_book->list[i].si_no);
+						
+						address_book->list[i].si_no = atoi(buf);
+						
+						printf("serial number written as %i\n", address_book->list[i].si_no);
+						
+						break;
+					case 0: //Name
+						
+						printf("attempting to write %s to address %p\n", buf, address_book->list[i].name[0]);
+						
+						strcpy(address_book->list[i].name[0], buf);
+						
+						printf("name written as %s\n", address_book->list[i].name[0]);
+						
+						break;
+					case 1: //Phone number 0
+						
+						printf("attempting to write %s to address %p\n", buf, &(address_book->list->phone_numbers[0]));
+						
+						strcpy(address_book->list[i].phone_numbers[0], buf);
+						
+						printf("phone 0 written as %s\n", address_book->list[i].phone_numbers[0]);
+						
+						break;
+					case 2: //Phone number 1
+						
+						printf("attempting to write %s to address %p\n", buf, address_book->list->phone_numbers[1]);
+						
+						strcpy(address_book->list[i].phone_numbers[1], buf);
+						
+						printf("phone 1 written as %s\n", address_book->list[i].phone_numbers[1]);
+						
+						break;
+					case 3: //Phone number 2
+						strcpy(address_book->list[i].phone_numbers[2], buf);
+						
+						printf("phone 2 written as %s\n", address_book->list[i].phone_numbers[2]);
 							break;
-						case 0: //Name
-							
-							printf("attempting to write to address %i\n", address_book->list[i].name);
-							
-							strcpy(address_book->list[i].name[0], buf);
-							
-							printf("name written as %s\n", address_book->list[i].name);
-							
-							break;
-						case 1: //Phone number 0
-							
-							printf("attempting to write to address %i\n", address_book->list->phone_numbers[0]);
-							
-							strcpy(address_book->list[i].phone_numbers[0], buf);
-							
-							printf("phone 0 written as %s\n", address_book->list[i].phone_numbers[0]);
-							
-							break;
-						case 2: //Phone number 1
-							
-							printf("attempting to write to address %i\n", address_book->list->phone_numbers[1]);
-							
-							strcpy(address_book->list[i].phone_numbers[1], buf);
-							
-							printf("phone 1 written as %s\n", address_book->list[i].phone_numbers[1]);
-							
-							break;
-						case 3: //Phone number 2
-							strcpy(address_book->list[i].phone_numbers[2], buf);
-							
-							printf("phone 2 written as %s\n", address_book->list[i].phone_numbers[2]);
-
-							break;
-						case 4: //Phone number 3
-							strcpy(address_book->list[i].phone_numbers[3], buf);
-							
-							printf("phone 3 written as %s\n", address_book->list[i].phone_numbers[3]);
-							
-							break;
-						case 5: //Phone number 4
-							strcpy(address_book->list[i].phone_numbers[4], buf);
-							
-							printf("phone 4 written as %s\n", address_book->list[i].phone_numbers[4]);
-							break;
-						case 6: //Email 0
-							strcpy(address_book->list[i].email_addresses[0], buf);
-							
-							printf("email 0 written as %s\n", address_book->list[i].email_addresses[0]);
-							
-							break;
-						case 7: //Email 1
-							strcpy(address_book->list[i].email_addresses[1], buf);
-							
-							printf("email 1 written as %s\n", address_book->list[i].email_addresses[1]);
-							
-							break;
-						case 8: //Email 2
-							strcpy(address_book->list[i].email_addresses[2], buf);
-							
-							printf("email 2 written as %s\n", address_book->list[i].email_addresses[2]);
-							
-							break;
-						case 9: //Email 3
-							strcpy(address_book->list[i].email_addresses[3], buf);
-							
-							printf("email 3 written as %s\n", address_book->list[i].email_addresses[3]);
-							
-							break;
-						case 10: //Email 4
-							strcpy(address_book->list[i].email_addresses[4], buf);
-							
-							printf("email 4 written as %s\n", address_book->list[i].email_addresses[4]);
-							
-							break;
-					}
-					memset(buf,0,sizeof(buf-1)); //empty the buffer for the next word
-					
-					printf("buffer emptied\n");
+					case 4: //Phone number 3
+						strcpy(address_book->list[i].phone_numbers[3], buf);
+						
+						printf("phone 3 written as %s\n", address_book->list[i].phone_numbers[3]);
+						
+						break;
+					case 5: //Phone number 4
+						strcpy(address_book->list[i].phone_numbers[4], buf);
+						
+						printf("phone 4 written as %s\n", address_book->list[i].phone_numbers[4]);
+						break;
+					case 6: //Email 0
+						strcpy(address_book->list[i].email_addresses[0], buf);
+						
+						printf("email 0 written as %s\n", address_book->list[i].email_addresses[0]);
+						
+						break;
+					case 7: //Email 1
+						strcpy(address_book->list[i].email_addresses[1], buf);
+						
+						printf("email 1 written as %s\n", address_book->list[i].email_addresses[1]);
+						
+						break;
+					case 8: //Email 2
+						strcpy(address_book->list[i].email_addresses[2], buf);
+						
+						printf("email 2 written as %s\n", address_book->list[i].email_addresses[2]);
+						
+						break;
+					case 9: //Email 3
+						strcpy(address_book->list[i].email_addresses[3], buf);
+						
+						printf("email 3 written as %s\n", address_book->list[i].email_addresses[3]);
+						
+						break;
+					case 10: //Email 4
+						strcpy(address_book->list[i].email_addresses[4], buf);
+						
+						printf("email 4 written as %s\n", address_book->list[i].email_addresses[4]);
+						
+						break;
 				}
-				section++;
+				memset(buf,0,sizeof(buf-1)); //empty the buffer for the next word
+					
+				printf("buffer emptied\n");
 				
 				printf("section incremented\n");
 			}
@@ -162,6 +159,8 @@ int read_items(AddressBook *address_book)
 		printf("section reset\n");
 		
 		buf_index = 0;
+
+		printf("buffer reset\n");
 	}
 	fclose(address_book->fp);
 	return 1;
@@ -230,33 +229,60 @@ Status save_file(AddressBook *address_book)
 	printf("Opened successfully.\n");
 	char* pause = "a";
 	int chars_written = 0;
+	char* into_file;
 	for (int items = 0; items < address_book->count; items) { //repeat for each contact
-		
+
 		printf("Attempting to write to file, contact %i\n", items);
+
+		
 		chars_written = fprintf(address_book->fp, "%d,", address_book->list[items].si_no);
 		printf("Wrote %d characters to %d\n", chars_written, address_book->fp);
-		chars_written = fprintf(address_book->fp, "%s,", address_book->list[items].name[0]);
+		
+		strcpy(into_file,address_book->list[items].name[0]);
+		chars_written = fprintf(address_book->fp, "%s,", into_file);
 		printf("Wrote %d characters to %d\n", chars_written, address_book->fp);
-		chars_written = fprintf(address_book->fp, "%s,", address_book->list[items].phone_numbers[0]);
+
+		strcpy(into_file,address_book->list[items].phone_numbers[0]);
+		chars_written = fprintf(address_book->fp, "%s,", into_file);
 		printf("Wrote %d characters to %d\n", chars_written, address_book->fp);
-		chars_written = fprintf(address_book->fp, "%s,", address_book->list[items].phone_numbers[1]);
+
+		strcpy(into_file,address_book->list[items].phone_numbers[1]);
+		chars_written = fprintf(address_book->fp, "%s,", into_file);
 		printf("Wrote %d characters to %d\n", chars_written, address_book->fp);
-		chars_written = fprintf(address_book->fp, "%s,", address_book->list[items].phone_numbers[2]);
+
+		strcpy(into_file,address_book->list[items].phone_numbers[2]);
+		chars_written = fprintf(address_book->fp, "%s,", into_file);
 		printf("Wrote %d characters to %d\n", chars_written, address_book->fp);
-		chars_written = fprintf(address_book->fp, "%s,", address_book->list[items].phone_numbers[3]);
+		
+		strcpy(into_file,address_book->list[items].phone_numbers[3]);
+		chars_written = fprintf(address_book->fp, "%s,", into_file);
 		printf("Wrote %d characters to %d\n", chars_written, address_book->fp);
-		chars_written = fprintf(address_book->fp, "%s,", address_book->list[items].phone_numbers[4]);
+		
+		strcpy(into_file,address_book->list[items].phone_numbers[4]);
+		chars_written = fprintf(address_book->fp, "%s,", into_file);
 		printf("Wrote %d characters to %d\n", chars_written, address_book->fp);
-		chars_written = fprintf(address_book->fp, "%s,", address_book->list[items].email_addresses[0]);
+		
+		strcpy(into_file,address_book->list[items].email_addresses[0]);
+		chars_written = fprintf(address_book->fp, "%s,", into_file);
 		printf("Wrote %d characters to %d\n", chars_written, address_book->fp);
-		chars_written = fprintf(address_book->fp, "%s,", address_book->list[items].email_addresses[1]);
+		
+		strcpy(into_file,address_book->list[items].email_addresses[1]);
+		chars_written = fprintf(address_book->fp, "%s,", into_file);
 		printf("Wrote %d characters to %d\n", chars_written, address_book->fp);
-		chars_written = fprintf(address_book->fp, "%s,", address_book->list[items].email_addresses[2]);
+		
+		strcpy(into_file,address_book->list[items].email_addresses[2]);
+		chars_written = fprintf(address_book->fp, "%s,", into_file);
 		printf("Wrote %d characters to %d\n", chars_written, address_book->fp);
-		chars_written = fprintf(address_book->fp, "%s,", address_book->list[items].email_addresses[3]);
+		
+		strcpy(into_file,address_book->list[items].email_addresses[3]);
+		chars_written = fprintf(address_book->fp, "%s,", into_file);
 		printf("Wrote %d characters to %d\n", chars_written, address_book->fp);
-		chars_written = fprintf(address_book->fp, "%s,", address_book->list[items].email_addresses[4]);
+		
+		strcpy(into_file,address_book->list[items].email_addresses[4]);
+		chars_written = fprintf(address_book->fp, "%s,", into_file);
 		printf("Wrote %d characters to %d\n", chars_written, address_book->fp);
+		
+
 		printf("wrote %d, %s, %s, %s, %s, %s, %s, %s, %s, %s", address_book->list[items].si_no,address_book->list[items].name[0],address_book->list[items].phone_numbers[1], address_book->list[items].phone_numbers[2], address_book->list[items].phone_numbers[3], address_book->list[items].phone_numbers[4], address_book->list[items].email_addresses[0], address_book->list[items].email_addresses[1], address_book->list[items].email_addresses[2], address_book->list[items].email_addresses[3], address_book->list[items].email_addresses[4]);
 		printf("Paused, press any combination of letters and then enter to unpause. \n");
 		scanf("%s", pause);

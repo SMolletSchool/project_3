@@ -66,9 +66,9 @@ void render_contact(AddressBook *address_book, int contact) {
 	/*
 		Print contact info at pointer
 		*/
-		printf("============================================================================================================/n");
-		printf(": S. No : Name                            : Phone No                        : Email ID                     :/n");
-		printf("============================================================================================================/n");
+		printf("============================================================================================================\n");
+		printf(": S. No : Name                            : Phone No                        : Email ID                     :\n");
+		printf("============================================================================================================\n");
 		//print each section spaced out correctly
 		render_serial(address_book->list[contact].si_no);
 		render_text(address_book->list[contact].name[0]);
@@ -146,7 +146,6 @@ Status add_contacts(AddressBook *address_book)
    printf("0.  Back\n1. Name:    %s\n2. Phone No %d:     %s\n3.  Email ID %d:    %s\n", newContact.name, countPhone, newContact.phone_numbers, countEmail, newContact.email_addresses); // show all available options
    printf("Please select an option: "); // prompt user to choose an option
    scanf(" %d", &choice); // save option into variable choice
-   int bookSize = address_book -> count; // create var bookSize to store size of address book
    
    switch(choice) {
       case 0: // user will go back to main menu
@@ -169,10 +168,10 @@ Status add_contacts(AddressBook *address_book)
    }
    
    // user should be finished with data input once we reach this part...
-   bookSize++; // increment the bookSize to reflect added contact
-   newContact.si_no = bookSize; // assign a serial number to the new contact, using new bookSize
-   address_book -> count = bookSize; // update count variable in address book
-   address_book -> list[bookSize] = newContact; // finally, add new contact to the address book
+   address_book -> count++; // update count variable in address book
+   newContact.si_no = address_book->count; // assign a serial number to the new contact
+   address_book->list = realloc(address_book->list,sizeof(address_book->list[0])*address_book->count); //reallocate memory to have space for new contact
+   address_book -> list[address_book->count] = newContact; // finally, add new contact to the address book
    return e_success;
 }
 
