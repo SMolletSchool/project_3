@@ -10,6 +10,8 @@
 
 int read_items(AddressBook *address_book)
 { //Function to read the file and populate the contact info
+	address_book->fp = fopen(DEFAULT_FILE, "r"); //open for reading
+
 	//First count the lines in the file
 	address_book->count = 0;
 	for (char c = getc(address_book->fp); c != EOF; c = getc(address_book->fp)) { //Repeats until we reach the end of the file
@@ -161,6 +163,7 @@ int read_items(AddressBook *address_book)
 		
 		buf_index = 0;
 	}
+	fclose(address_book->fp);
 	return 1;
 }
 
@@ -182,9 +185,9 @@ Status load_file(AddressBook *address_book)
 		 * Do the neccessary step to open the file
 		 * Do error handling
 		 */
-		address_book->fp = fopen(DEFAULT_FILE, "r"); //open for reading
+		
 		int test_read = read_items(address_book);
-		fclose(address_book->fp);
+		
 		if (test_read == -1) {
 			return e_fail;
 		}
@@ -193,7 +196,8 @@ Status load_file(AddressBook *address_book)
 	else
 	{
 		/* Create a file for adding entries */
-		address_book->fp = fopen(DEFAULT_FILE, "w+"); //open for reading and writing, while creating the file
+		address_book->fp = fopen(DEFAULT_FILE, "w"); //open for writing, to create the file
+		fclose(address_book->fp); //then close the file, we don't need it yet
 	}
 
 	return e_success;

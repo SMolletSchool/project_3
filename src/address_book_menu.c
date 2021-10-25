@@ -233,16 +233,16 @@ Status add_contacts(AddressBook *address_book)
          break; // all done with data input. exit this switch case, then go on to saving new contact.
       case 1: // user wants to add a name
          printf("\nEnter the name: "); // prompt user for name
-         scanf("%s", &newContact.name[0]); // store this name in name field for newContact
+         scanf("%s", newContact.name[0]); // store this name in name field for newContact
          goto backToMenu; // jump back to add menu
       case 2: // user wants to add phone number
          printf("\nEnter phone number %d: ", countPhone); // prompt user for name
-         scanf("%s", &newContact.phone_numbers[countPhone]); // store this name in phone field for newContact
+         scanf("%s", newContact.phone_numbers[countPhone]); // store this name in phone field for newContact
          countPhone++; // increment countPhone variable
          goto backToMenu;
       case 3: // user wants to add email
          printf("\nEnter email %d: ", countEmail); // prompt user for name
-         scanf("%s", &newContact.email_addresses[countEmail]); // store this name in email field for newContact
+         scanf("%s", newContact.email_addresses[countEmail]); // store this name in email field for newContact
          countEmail++; // increment the countEmail variable
          goto backToMenu;
       
@@ -272,56 +272,49 @@ void search_menu_display(void)
 
 
 
-Status search(const char *str, AddressBook *address_book, int loop_count, Modes mode) //will return contact index on success, otherwise will cope and seethe
+Status search(const char *str, AddressBook *address_book, int list_render, Modes mode) //will return contact index on success, otherwise will cope and seethe
 {
-	//I have no clue what a good chunk of the fields are even for, so they'll be skipped/filled with unused variables for now.
-	Status status = e_no_match; //Used to return success
-	int contactFound = 0;
+	Status status = e_no_match; //Used to return failure, or contact index
 	switch (mode) {
 		case e_first_opt: //searching for name, can just use name
-			for (int i = 0; i < loop_count; i++) {
+			for (int i = 0; i < address_book->count; i++) {
 				if (strcmp(address_book->list[i].name[0], str) == 0) { //Get name from pointer
-					status = e_success; //Success! set to success
-					contactFound = i;
+					status = i; //Success! set to contact index
 				}
 			}
 			break;
 		case e_second_opt: //searching onwards (except serial number), needs inner loop to check each possible phone/email
-			for (int i = 0; i < loop_count; i++) {
+			for (int i = 0; i < address_book->count; i++) {
 				for (int j = 0; j < PHONE_NUMBER_COUNT; j++) {
 					if (strcmp(address_book->list[i].phone_numbers[j], str) == 0) {
 						status = e_success;
-						contactFound = i;
-					} //Success! set to success
+					}
 				}
 			}
 			break;
 		case e_third_opt:
-			for (int i = 0; i < loop_count; i++) {
+			for (int i = 0; i < address_book->count; i++) {
 				for (int j = 0; j < EMAIL_ID_COUNT; j++) {
 					if (strcmp(address_book->list[i].email_addresses[j], str) == 0) {
 						status = e_success;
-						contactFound = i;
-					} //Success! set to success;
+					}
 				}
 			}
 			break;
 		case e_fourth_opt:
 		;int convert_string = atoi(str); //convert to int
-			for (int i = 0; i < loop_count; i++) {
+			for (int i = 0; i < address_book->count; i++) {
 				if (address_book->list[i].si_no == convert_string) { //Int comparison
 					status = e_success;
-					contactFound = i;
 				}
 			}
 			break;
 	}
-	if (status == e_success) {
-		render_contact(address_book,contactFound);
+	if (status != e_no_match && list_render == 1) {
+		render_contact(address_book, (int) status);
 		printf("============================================================================================================/n");
 	}
-	return contactFound; 
-	//return status;
+	return status;
 }
 
 Status search_contact(AddressBook *address_book)
@@ -334,28 +327,28 @@ Status search_contact(AddressBook *address_book)
 		case '1':
 			printf("\nEnter name to search: ");
 			scanf("%s", user_input);
-			if (search(user_input,address_book,address_book->count,e_first_opt) == e_no_match) {
+			if (search(user_input,address_book,1,e_first_opt) == e_no_match) {
 				printf("\n%s not found.", user_input);
 			}
 			break;
 		case '2':
 			printf("\nEnter phone number to search: ");
 			scanf("%s", user_input);
-			if (search(user_input,address_book,address_book->count,e_second_opt) == e_no_match) {
+			if (search(user_input,address_book,1,e_second_opt) == e_no_match) {
 				printf("\n%s not found.", user_input);
 			}
 			break;
 		case '3':
 			printf("\nEnter email to search: ");
 			scanf("%s", user_input);
-			if (search(user_input,address_book,address_book->count,e_third_opt) == e_no_match) {
+			if (search(user_input,address_book,1,e_third_opt) == e_no_match) {
 				printf("\n%s not found.", user_input);
 			}
 			break;
 		case '4':
 			printf("\nEnter serial number to search: ");
 			scanf("%s", user_input);
-			if (search(user_input,address_book,address_book->count,e_fourth_opt) == e_no_match) {
+			if (search(user_input,address_book,1,e_fourth_opt) == e_no_match) {
 				printf("\n%s not found.", user_input);
 			}
 			break;
@@ -391,7 +384,7 @@ Status edit_contact(AddressBook *address_book)
 	char newPhone[NAME_LEN];
     char targetEmail[EMAIL_ID_LEN];
 	char newEmail[EMAIL_ID_LEN];
-	int target_si_no;
+	char *target_si_no;
 	int new_si_no;
 
     char input[5];
@@ -401,7 +394,7 @@ Status edit_contact(AddressBook *address_book)
 
 	scanf("$d",&option);
 
-		
+	int contactIndex;
 
 	switch (option)
 	{
@@ -410,15 +403,17 @@ Status edit_contact(AddressBook *address_book)
             break;
 		case 1: // edit by name
 			printf("Enter the Name: ");
-            scanf("%s", &targetName);
-            if (search(targetName,address_book,address_book->count,e_first_opt) == 0) 
+            scanf("%s", targetName);
+			contactIndex = search(targetName,address_book,0,e_first_opt);
+            if (contactIndex == e_no_match) 
 			{
 				printf("\n%s not found.", targetName);
 			}
             else
             {
                 menu_header("Search Result:\n");
-                search(targetName,address_book,address_book->count,e_first_opt);
+                render_contact(address_book, contactIndex);
+				printf("============================================================================================================/n");
                 printf("Press: [s] Select. [q] | cancel: ");
                 scanf("%s",input);
                     
@@ -428,25 +423,25 @@ Status edit_contact(AddressBook *address_book)
                 }
 				if(strcmp(input,select))
 				{
-					printf("\nSelect a Serial Number (S.No) to Edit: ");
-					scanf("%d", temp);
 					printf("\nEnter new Name: ");
 					scanf("%s",newName);
-					strcpy(address_book->list->name, newName);
+					strcpy(address_book->list[contactIndex].name[0], newName);
 				}
             }
 			break;
 		case 2: // edit by phone no
 			printf("Enter the Phone number: ");
-            scanf("%s", &targetPhone);
-            if (search(targetPhone,address_book,address_book->count,e_second_opt) == 0) 
+            scanf("%s", targetPhone);
+			contactIndex = search(targetPhone,address_book,0,e_second_opt);
+            if (contactIndex == e_no_match) 
 			{
 				printf("\n%s not found.", targetPhone);
 			}
             else
             {
                 menu_header("Search Result:\n");
-                search(targetPhone,address_book,address_book->count,e_second_opt);
+                render_contact(address_book, contactIndex);
+				printf("============================================================================================================/n");
                 printf("Press: [s] Select. [q] | cancel: ");
                 scanf("%s",input);
                     
@@ -456,11 +451,17 @@ Status edit_contact(AddressBook *address_book)
                 }
 				if(strcmp(input,select))
 				{
-					printf("\nSelect a Serial Number (S.No) to Edit: ");
-					scanf("%d", temp);
+					do {
+						printf("\nSelect a Phone Number to Edit: ");
+						scanf("%d", &temp);
+						if (temp < 0 || temp > 4) printf("\nInvalid input, please enter integer from 0 to 4");
+					}
+					while (temp < 0 || temp > 4);
+					
+					
 					printf("\nEnter new Phone Number: ");
 					scanf("%s",newPhone);
-					strcpy(address_book->list->phone_numbers, newPhone);
+					strcpy(address_book->list[contactIndex].phone_numbers[temp], newPhone);
 				}
             }
 			break;	
@@ -485,23 +486,33 @@ Status edit_contact(AddressBook *address_book)
                 }
 				if(strcmp(input,select))
 				{
+					do {
+						printf("\nSelect an Email to Edit: ");
+						scanf("%d", &temp);
+						if (temp < 0 || temp > 4) printf("\nInvalid input, please enter integer from 0 to 4");
+					}
+					while (temp < 0 || temp > 4);
+					
+					
 					printf("\nEnter new Email: ");
 					scanf("%s",newEmail);
-					strcpy(address_book->list->email_addresses, newEmail);
+					strcpy(address_book->list[contactIndex].email_addresses[temp], newPhone);
 				}
             }
 			break;
 		case 4: // edit by serial no
 			printf("Enter the Serial Number: ");
-            scanf("%s", &target_si_no);
-            if (search(target_si_no,address_book,address_book->count,e_fourth_opt) == e_no_match) 
+            scanf("%s", target_si_no);
+			contactIndex = search(target_si_no,address_book,0,e_fourth_opt);
+            if (contactIndex == e_no_match) 
 			{
-				printf("\n%d not found.", target_si_no);
+				printf("\n%s not found.", target_si_no);
 			}
             else
             {
                 menu_header("Search Result:\n");
-                search(target_si_no,address_book,address_book->count,e_fourth_opt);
+                render_contact(address_book, contactIndex);
+				printf("============================================================================================================/n");
                 printf("Press: [s] Select. [q] | cancel: ");
                 scanf("%s",input);
                     
@@ -512,8 +523,8 @@ Status edit_contact(AddressBook *address_book)
 				if(strcmp(input,select))
 				{
 					printf("\nEnter new Serial Number: ");
-					scanf("%d",new_si_no);
-					strcpy(address_book->list->si_no, new_si_no);
+					scanf("%d",&new_si_no);
+					address_book->list[contactIndex].si_no = new_si_no;
 				}
             }
 			break;
@@ -532,7 +543,7 @@ Status delete_contact(AddressBook *address_book)
 	menu_header("Delete Contact"); //calls menu header
 	printf("0.  Back\n1.  Name\n2.  Phone #\n3.  Email ID\n4.Serial #\n\n"); //available options are printed
 	printf("Please select an option"); //has user select an option
-	scanf("$d",&choice); //takes user's input
+	scanf("%d",&choice); //takes user's input
 	int sizeAddressBook = address_book -> count;
 	char targetName[NAME_LEN];
 	char targetPhone[NUMBER_LEN];
@@ -551,7 +562,7 @@ Status delete_contact(AddressBook *address_book)
 			printf("\nEnter the Name: "); //asks for the name
 			scanf("%s", &targetName); // input the name
 			for(address_book < endPtr; address_book++;){ //loops each element of addressbook
-				if(strcmp(*address_book -> list -> name, targetName) == 0){
+				if(strcmp(address_book -> list[0].name[0], targetName) == 0){
 					for(; address_book < endPtr-1; address_book++){
 						address_book = address_book + 1; 
 					}
@@ -562,7 +573,7 @@ Status delete_contact(AddressBook *address_book)
 		case '2' : 
 			printf("\nEnter the Phone Number: "); //asks for phone #
 			scanf("%s", &targetPhone); //input phone #
-			sizeOfArrayPhone = sizeof(address_book -> list -> phone_numbers)/ sizeof(address_book -> list -> phone_numbers[0]);
+			sizeOfArrayPhone = sizeof(address_book -> list[0].phone_numbers)/ sizeof(address_book -> list[0].phone_numbers[0]);
 			for(; address_book < endPtr; address_book++){ //loops each element of addressbook 
 				while(loop < sizeOfArrayPhone){
 					if(strcmp(address_book -> list -> phone_numbers[loop], targetPhone) == 0){ // if element = to target phone #
@@ -578,7 +589,7 @@ Status delete_contact(AddressBook *address_book)
 		case '3' : 
 			printf("\nEnter the Email: "); //enter email
 			scanf("%s", &targetEmail); //user input
-			sizeOfArrayPhone = sizeof(address_book -> list -> email_addresses)/ sizeof(address_book -> list -> email_addresses[0]);
+			sizeOfArrayPhone = sizeof(address_book -> list[0].email_addresses)/ sizeof(address_book -> list[0].email_addresses[0]);
 			for(; address_book < endPtr; address_book++){ //loop through all elements
 				while(loop < sizeOfArrayEmail){
 					if(strcmp(address_book -> list -> email_addresses[loop], targetEmail) == 0){ //if target email found, continue
