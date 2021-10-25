@@ -9,6 +9,11 @@
 #include "../include/address_book_menu.h"
 #include "../include/address_book.h"
 
+/*#if ($(OS), Windows_NT)
+
+#endif*/
+
+
 int get_option(int type, const char *msg)
 {
 	/*
@@ -117,7 +122,7 @@ void render_contact(AddressBook *address_book, int contact) {
 		printf("\n                                          ");
 }
 
-Status list_contacts(AddressBook *address_book, const char *title, int *index, const char *msg, Modes mode)
+Status list_contacts(AddressBook *address_book)
 {
 
 	if (address_book->list == NULL ) // nothing to display
@@ -139,7 +144,7 @@ void menu_header(const char *str)
 {
 	fflush(stdout);
 
-	system("cls");
+	//system("cls");
 
 	printf("#######  Address Book  #######\n");
 	if (*str != '\0')
@@ -199,7 +204,7 @@ Status menu(AddressBook *address_book)
 				break;
 			case e_list_contacts:
 				break;
-				list_contacts(address_book,"1",1,"1",e_list);
+				list_contacts(address_book);
 			case e_save:
 				save_file(address_book);
 				break;
@@ -248,6 +253,7 @@ Status add_contacts(AddressBook *address_book)
    newContact.si_no = bookSize; // assign a serial number to the new contact, using new bookSize
    address_book -> count = bookSize; // update count variable in address book
    address_book -> list[bookSize] = newContact; // finally, add new contact to the address book
+   return e_success;
 }
 
 
@@ -266,7 +272,7 @@ void search_menu_display(void)
 
 
 
-Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
+Status search(const char *str, AddressBook *address_book, int loop_count, Modes mode) //will return contact index on success, otherwise will cope and seethe
 {
 	//I have no clue what a good chunk of the fields are even for, so they'll be skipped/filled with unused variables for now.
 	Status status = e_no_match; //Used to return success
@@ -314,7 +320,8 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 		render_contact(address_book,contactFound);
 		printf("============================================================================================================/n");
 	}
-	return status;
+	return contactFound; 
+	//return status;
 }
 
 Status search_contact(AddressBook *address_book)
@@ -327,28 +334,28 @@ Status search_contact(AddressBook *address_book)
 		case '1':
 			printf("\nEnter name to search: ");
 			scanf("%s", user_input);
-			if (search(user_input,address_book,address_book->count,1,user_input,e_first_opt) == e_no_match) {
+			if (search(user_input,address_book,address_book->count,e_first_opt) == e_no_match) {
 				printf("\n%s not found.", user_input);
 			}
 			break;
 		case '2':
 			printf("\nEnter phone number to search: ");
 			scanf("%s", user_input);
-			if (search(user_input,address_book,address_book->count,2,user_input,e_second_opt) == e_no_match) {
+			if (search(user_input,address_book,address_book->count,e_second_opt) == e_no_match) {
 				printf("\n%s not found.", user_input);
 			}
 			break;
 		case '3':
 			printf("\nEnter email to search: ");
 			scanf("%s", user_input);
-			if (search(user_input,address_book,address_book->count,3,user_input,e_third_opt) == e_no_match) {
+			if (search(user_input,address_book,address_book->count,e_third_opt) == e_no_match) {
 				printf("\n%s not found.", user_input);
 			}
 			break;
 		case '4':
 			printf("\nEnter serial number to search: ");
 			scanf("%s", user_input);
-			if (search(user_input,address_book,address_book->count,4,user_input,e_fourth_opt) == e_no_match) {
+			if (search(user_input,address_book,address_book->count,e_fourth_opt) == e_no_match) {
 				printf("\n%s not found.", user_input);
 			}
 			break;
@@ -388,8 +395,8 @@ Status edit_contact(AddressBook *address_book)
 	int new_si_no;
 
     char input[5];
-    char select = "s";
-    char quit = "q";
+    char *select = "s";
+    char *quit = "q";
     edit_menu();
 
 	scanf("$d",&option);
@@ -404,14 +411,14 @@ Status edit_contact(AddressBook *address_book)
 		case 1: // edit by name
 			printf("Enter the Name: ");
             scanf("%s", &targetName);
-            if (search(targetName,address_book,address_book->count,1,targetName,e_first_opt) == 0) 
+            if (search(targetName,address_book,address_book->count,e_first_opt) == 0) 
 			{
 				printf("\n%s not found.", targetName);
 			}
             else
             {
                 menu_header("Search Result:\n");
-                search(targetName,address_book,address_book->count,1,targetName,e_first_opt);
+                search(targetName,address_book,address_book->count,e_first_opt);
                 printf("Press: [s] Select. [q] | cancel: ");
                 scanf("%s",input);
                     
@@ -432,14 +439,14 @@ Status edit_contact(AddressBook *address_book)
 		case 2: // edit by phone no
 			printf("Enter the Phone number: ");
             scanf("%s", &targetPhone);
-            if (search(targetPhone,address_book,address_book->count,1,targetPhone,e_second_opt) == 0) 
+            if (search(targetPhone,address_book,address_book->count,e_second_opt) == 0) 
 			{
 				printf("\n%s not found.", targetPhone);
 			}
             else
             {
                 menu_header("Search Result:\n");
-                search(targetPhone,address_book,address_book->count,1,targetPhone,e_second_opt);
+                search(targetPhone,address_book,address_book->count,e_second_opt);
                 printf("Press: [s] Select. [q] | cancel: ");
                 scanf("%s",input);
                     
@@ -461,14 +468,14 @@ Status edit_contact(AddressBook *address_book)
 		case 3: // edit by email
 			printf("Enter the Email: ");
             scanf("%s", &targetEmail);
-            if (search(targetEmail,address_book,address_book->count,1,targetEmail,e_third_opt) == 0) 
+            if (search(targetEmail,address_book,address_book->count,e_third_opt) == 0) 
 			{
 				printf("\n%s not found.", targetEmail);
 			}
             else
             {
                 menu_header("Search Result:\n");
-                search(targetEmail,address_book,address_book->count,1,targetEmail,e_third_opt);
+                search(targetEmail,address_book,address_book->count,e_third_opt);
                 printf("Press: [s] Select. [q] | cancel: ");
                 scanf("%s",input);
                     
@@ -487,14 +494,14 @@ Status edit_contact(AddressBook *address_book)
 		case 4: // edit by serial no
 			printf("Enter the Serial Number: ");
             scanf("%s", &target_si_no);
-            if (search(target_si_no,address_book,address_book->count,4,target_si_no,e_fourth_opt) == e_no_match) 
+            if (search(target_si_no,address_book,address_book->count,e_fourth_opt) == e_no_match) 
 			{
 				printf("\n%d not found.", target_si_no);
 			}
             else
             {
                 menu_header("Search Result:\n");
-                search(target_si_no,address_book,address_book->count,4,target_si_no,e_fourth_opt);
+                search(target_si_no,address_book,address_book->count,e_fourth_opt);
                 printf("Press: [s] Select. [q] | cancel: ");
                 scanf("%s",input);
                     

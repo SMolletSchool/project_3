@@ -8,18 +8,22 @@
 
 #include "../include/address_book.h"
 
-void read_items(AddressBook *address_book)
+int read_items(AddressBook *address_book)
 { //Function to read the file and populate the contact info
 	//First count the lines in the file
 	address_book->count = 0;
 	for (char c = getc(address_book->fp); c != EOF; c = getc(address_book->fp)) { //Repeats until we reach the end of the file
 		if (c == '\n') {
-			address_book->count++; //increment count for every new line
-			//printf("counter incremented\n");	
+			address_book->count += 1; //increment count for every new line
+			
+			printf("counter incremented\n");	
 		} 
 		
 	}
-
+	if (address_book->count > 1000) {
+		printf("count is WAY too big!\n");
+		return -1;
+	}
 	
 	//Then read the lines to populate the address book's contact list
 	fseek(address_book->fp,0,SEEK_SET); //reset file pointer position
@@ -27,92 +31,137 @@ void read_items(AddressBook *address_book)
 
 	memset(buf,0,sizeof(buf-1)); //empty the buffer here to clean it
 	int buf_index = 0; //create an index variable to point at each character in buf
-	
 	int section = -1; //make a section variable
-	//ContactInfo *contactPointer = address_book->list; //Make a pointer for writing to the list?
+	const int contactSize = sizeof(ContactInfo); //use this for doing malloc
 
-	int contactSize = sizeof(ContactInfo);
 	printf("contact size initialized to %i\n", contactSize);
 	printf("count is equal to %i\n", address_book->count);
 	printf("%i bytes should be allocated\n", contactSize*(address_book->count));
+
 	address_book->list = malloc((address_book->count)*contactSize); //Allocate data for the contacts
+
 	printf("%i bytes allocated\n", (address_book->count)*contactSize);
+
 	for (int i = 0; i < address_book->count; i++) { //For every contact
 		for (char c = getc(address_book->fp); c != NEXT_ENTRY; c = getc(address_book->fp)) { //Repeat until we reach the newline
+			
 			printf("current char: %c\n", c);
+			
 			if (c == FIELD_DELIMITER) { //found a comma, time to populate this section
+				
 				printf("attempting to populate contact %i\n", i);
-				if (*buf != "\0") {//If the buffer isn't empty
+				
+				if (strlen(buf) != 0) {//If the buffer isn't empty
 					switch (section) {
 						case -1: //Serial number
+							
 							printf("attempting to write to address %i\n", address_book->list[i].si_no);
+							
 							address_book->list[i].si_no = atoi(buf);
+							
 							printf("serial number written as %i\n", address_book->list[i].si_no);
+							
 							break;
 						case 0: //Name
+							
 							printf("attempting to write to address %i\n", address_book->list[i].name);
-							strcpy(address_book->list[i].name, buf);
+							
+							strcpy(address_book->list[i].name[0], buf);
+							
 							printf("name written as %s\n", address_book->list[i].name);
+							
 							break;
-						case 1: //Phone number 1
+						case 1: //Phone number 0
+							
 							printf("attempting to write to address %i\n", address_book->list->phone_numbers[0]);
+							
 							strcpy(address_book->list[i].phone_numbers[0], buf);
+							
 							printf("phone 0 written as %s\n", address_book->list[i].phone_numbers[0]);
+							
 							break;
-						case 2: //Phone number 2
+						case 2: //Phone number 1
+							
 							printf("attempting to write to address %i\n", address_book->list->phone_numbers[1]);
+							
 							strcpy(address_book->list[i].phone_numbers[1], buf);
+							
 							printf("phone 1 written as %s\n", address_book->list[i].phone_numbers[1]);
+							
 							break;
-						case 3: //Phone number 3
+						case 3: //Phone number 2
 							strcpy(address_book->list[i].phone_numbers[2], buf);
+							
+							printf("phone 2 written\n");
+
 							break;
-						case 4: //Phone number 4
+						case 4: //Phone number 3
 							strcpy(address_book->list[i].phone_numbers[3], buf);
-							//printf("phone 3 written\n");
+							
+							printf("phone 3 written\n");
+							
 							break;
-						case 5: //Phone number 5
+						case 5: //Phone number 4
 							strcpy(address_book->list[i].phone_numbers[4], buf);
-							//printf("phone 4 written\n");
+							
+							printf("phone 4 written\n");
 							break;
-						case 6: //Email 1
+						case 6: //Email 0
 							strcpy(address_book->list[i].email_addresses[0], buf);
-							//printf("email 0 written\n");
+							
+							printf("email 0 written\n");
+							
 							break;
-						case 7: //Email 2
+						case 7: //Email 1
 							strcpy(address_book->list[i].email_addresses[1], buf);
-							//printf("email 1 written\n");
+							
+							printf("email 1 written\n");
+							
 							break;
-						case 8: //Email 3
+						case 8: //Email 2
 							strcpy(address_book->list[i].email_addresses[2], buf);
-							//printf("email 2 written\n");
+							
+							printf("email 2 written\n");
+							
 							break;
-						case 9: //Email 4
+						case 9: //Email 3
 							strcpy(address_book->list[i].email_addresses[3], buf);
-							//printf("email 3 written\n");
+							
+							printf("email 3 written\n");
+							
 							break;
-						case 10: //Email 5
+						case 10: //Email 4
 							strcpy(address_book->list[i].email_addresses[4], buf);
-							//printf("email 4 written\n");
+							
+							printf("email 4 written\n");
+							
 							break;
 					}
 					memset(buf,0,sizeof(buf-1)); //empty the buffer for the next word
+					
 					printf("buffer emptied\n");
 				}
 				section++;
+				
 				printf("section incremented\n");
 			}
 			else {
+				
 				printf("attempting to concatenate %c to buffer\n", c);
+				
 				buf[buf_index] = (char) c; //concatenate character onto buffer
 				buf_index++; //increment index for next char
+				
 				printf("char concatenated\n");
 			}
 		}
 		section = -1;
+		
 		printf("section reset\n");
+		
 		buf_index = 0;
 	}
+	return 1;
 }
 
 Status load_file(AddressBook *address_book)
@@ -124,7 +173,9 @@ Status load_file(AddressBook *address_book)
 	 */
 
 	ret = access(DEFAULT_FILE,F_OK);
-
+	
+	printf("File exists.\n");
+	
 	if (ret == 0)
 	{
 		/* 
@@ -132,8 +183,11 @@ Status load_file(AddressBook *address_book)
 		 * Do error handling
 		 */
 		address_book->fp = fopen(DEFAULT_FILE, "r"); //open for reading
-		read_items(address_book);
+		int test_read = read_items(address_book);
 		fclose(address_book->fp);
+		if (test_read == -1) {
+			return e_fail;
+		}
 
 	}
 	else
@@ -151,7 +205,9 @@ Status save_file(AddressBook *address_book)
 	 * Write contacts back to file.
 	 * Re write the complete file currently
 	 */
+	
 	printf("Attempting to open %s\n", DEFAULT_FILE);
+	
 	address_book->fp = fopen(DEFAULT_FILE, "w");
 
 	if (address_book->fp == NULL)
@@ -165,10 +221,14 @@ Status save_file(AddressBook *address_book)
 	 * Make sure to do error handling
 	 */
 	printf("Opened successfully.\n");
+	
 	for (int items = 0; items < address_book->count; items) { //repeat for each contact
 		//Instead of separating the writing into multiple statements, just use one really long write
+		
 		printf("Attemping to write to file, contact %i\n", items);
+		
 		fprintf(address_book->fp, "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", address_book->list[items].si_no,address_book->list[items].name[0],address_book->list[items].phone_numbers[0],address_book->list[items].phone_numbers[1],address_book->list[items].phone_numbers[2],address_book->list[items].phone_numbers[3],address_book->list[items].phone_numbers[4],address_book->list[items].email_addresses[0],address_book->list[items].email_addresses[1],address_book->list[items].email_addresses[2],address_book->list[items].email_addresses[3],address_book->list[items].email_addresses[4]);
+		
 		printf("Wrote %d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",address_book->list[items].si_no,address_book->list[items].name[0],address_book->list[items].phone_numbers[0],address_book->list[items].phone_numbers[1],address_book->list[items].phone_numbers[2],address_book->list[items].phone_numbers[3],address_book->list[items].phone_numbers[4],address_book->list[items].email_addresses[0],address_book->list[items].email_addresses[1],address_book->list[items].email_addresses[2],address_book->list[items].email_addresses[3],address_book->list[items].email_addresses[4]);
 	}
 	fclose(address_book->fp);
